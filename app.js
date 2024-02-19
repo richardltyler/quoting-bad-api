@@ -9,11 +9,31 @@ app.use(cors());
 app.use("/public", express.static(process.cwd() + "/public"));
 
 app.locals.characters = charactersData;
+app.locals.HANK = {
+  name: "HENRY SCHRADER",
+  nickname: "HANK SCHRADER",
+};
+app.locals.FLY = {
+  name: "THE FLY",
+};
+app.locals.STEPHEN_KING = {
+  name: "STEPHEN KING",
+};
 
-const getCharacterByName = (name) =>
-  charactersData.find(
-    (character) => character.name.toUpperCase() === name.toUpperCase()
+const getCharacterByName = (name) => {
+  // public api names are different than local api names
+  if (name.toUpperCase() === app.locals.HANK.nickname) {
+    return charactersData.find(
+      (character) => character.name.toUpperCase() === app.locals.HANK.name
+    );
+  }
+
+  return charactersData.find(
+    (character) =>
+      character.name.toUpperCase() === name.toUpperCase() ||
+      character.nickname.toUpperCase() === name.toUpperCase()
   );
+};
 
 const getCharacterById = (id) =>
   charactersData.find((character) => `${character.char_id}` === id);
@@ -24,38 +44,51 @@ app.get("/", (req, res) => {
 
 app.get("/api/v1/quotes", async (req, res) => {
   try {
-    // currently limited at 10 quotes
+    // game is limited to 10 quotes.
+    // We get 12 so that we can filter out any quotes from the fly or stephen king, characters that we do not have data for.
     const response = await axios.get(
-      "https://api.breakingbadquotes.xyz/v1/quotes/10"
+      "https://api.breakingbadquotes.xyz/v1/quotes/12"
     );
 
-    const data = response.data;
-    const transformedData = data.map((quote) => {
-      const characterId = getCharacterByName(quote.author).char_id;
+    const filteredData = response.data.filter(
+      (quote) =>
+        quote.author.toUpperCase() !== app.locals.FLY.name &&
+        quote.author.toUpperCase() !== app.locals.STEPHEN_KING.name
+    );
 
-      return {
-        ...quote,
-        author: {
-          id: characterId,
-          name: quote.author,
-        },
-      };
+    const transformedData = filteredData.map((quote) => {
+      const character = getCharacterByName(quote.author);
+
+      if (character) {
+        return {
+          ...quote,
+          author: {
+            id: character.char_id,
+            name: character.name,
+          },
+        };
+      } else {
+        res.status(404).send(`No characters found for author ${quote.author}`);
+      }
     });
 
-    res.json(transformedData);
+    const firstTenQuotes =
+      transformedData.length > 10
+        ? transformedData.slice(0, 10)
+        : transformedData;
+
+    res.json({ quotes: firstTenQuotes });
   } catch {
-    // TODO: error handling
-    // what if the name doesn't exist?
+    res.status(404).send("Failed to load quotes.");
   }
 });
 
 app.get("/api/v1/characters/:id", (req, res) => {
-  // client should encode name to account for spaces
   const requestedId = req.params.id;
 
   const character = getCharacterById(requestedId);
 
-  res.json(character);
+  res.json({ character: character });
 });
 
 app.get("/api/v1/characters", (req, res) => {
