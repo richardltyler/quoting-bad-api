@@ -42,6 +42,24 @@ app.get("/", (req, res) => {
   res.sendFile(process.cwd() + "/views/index.html");
 });
 
+app.get("/api/v1/characters/:id", (req, res) => {
+  const requestedId = req.params.id;
+
+  const character = getCharacterById(requestedId);
+
+  res.json({ character: character });
+});
+
+app.get("/api/v1/characters", (req, res) => {
+  const transformedCharacterList = app.locals.characters.map((char) => ({
+    id: char.char_id,
+    name: char.name,
+    image: char.img,
+  }));
+
+  res.json({ characters: transformedCharacterList });
+});
+
 app.get("/api/v1/quotes", async (req, res) => {
   try {
     // game is limited to 10 quotes.
@@ -81,24 +99,6 @@ app.get("/api/v1/quotes", async (req, res) => {
   } catch {
     res.status(404).send("Failed to load quotes.");
   }
-});
-
-app.get("/api/v1/characters/:id", (req, res) => {
-  const requestedId = req.params.id;
-
-  const character = getCharacterById(requestedId);
-
-  res.json({ character: character });
-});
-
-app.get("/api/v1/characters", (req, res) => {
-  const transformedCharacterList = app.locals.characters.map((char) => ({
-    id: char.char_id,
-    name: char.name,
-    image: char.img,
-  }));
-
-  res.json({ characters: transformedCharacterList });
 });
 
 app.listen(3000, () => {
