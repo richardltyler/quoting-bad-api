@@ -43,6 +43,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/v1/characters/:id", (req, res) => {
+  // TODO: error handling in try catch
   const requestedId = req.params.id;
 
   const character = getCharacterById(requestedId);
@@ -51,6 +52,7 @@ app.get("/api/v1/characters/:id", (req, res) => {
 });
 
 app.get("/api/v1/characters", (req, res) => {
+  // TODO: error handling in try catch
   const transformedCharacterList = app.locals.characters.map((char) => ({
     id: char.char_id,
     name: char.name,
