@@ -15,6 +15,13 @@ body {
   color: #15493c;
 }
 
+.api {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1.3rem;
+  align-self: flex-end;
+  font-weight: 100;
+}
+
 .header {
   color: #15493c;
   font-family: "Averia Serif Libre";
@@ -41,6 +48,7 @@ body {
 
 .bad-container {
   margin-left: 58px;
+  display: flex;
 }
 
 main {

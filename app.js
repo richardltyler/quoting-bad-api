@@ -35,31 +35,8 @@ const getCharacterByName = (name) => {
   );
 };
 
-const getCharacterById = (id) =>
-  charactersData.find((character) => `${character.char_id}` === id);
-
 app.get("/", (req, res) => {
   res.sendFile(process.cwd() + "/views/index.html");
-});
-
-app.get("/api/v1/characters/:id", (req, res) => {
-  // TODO: error handling in try catch
-  const requestedId = req.params.id;
-
-  const character = getCharacterById(requestedId);
-
-  res.json({ character: character });
-});
-
-app.get("/api/v1/characters", (req, res) => {
-  // TODO: error handling in try catch
-  const transformedCharacterList = app.locals.characters.map((char) => ({
-    id: char.char_id,
-    name: char.name,
-    image: char.img,
-  }));
-
-  res.json({ characters: transformedCharacterList });
 });
 
 app.get("/api/v1/quotes", async (req, res) => {
@@ -85,6 +62,7 @@ app.get("/api/v1/quotes", async (req, res) => {
           author: {
             id: character.char_id,
             name: character.name,
+            image: character.image
           },
         };
       } else {
