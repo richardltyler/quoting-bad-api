@@ -193,7 +193,7 @@ const charactersData = [
     occupation: ["Lab Assistant", "Enforcer", "Math Cook"],
     img: "https://vignette.wikia.nocookie.net/breakingbad/images/9/95/Todd_brba5b.png/revision/latest?cb=20130717134303",
     status: "Deceased",
-    nickname: "Ricky Hitler",
+    nickname: "Todd",
     appearance: [5],
     portrayed: "Jesse Plemons",
     category: "Breaking Bad",
