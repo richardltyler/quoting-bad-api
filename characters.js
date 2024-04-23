@@ -128,7 +128,7 @@ const charactersData = [
     occupation: ["Former Senior Cartel Leader"],
     img: "https://vignette.wikia.nocookie.net/breakingbad/images/b/b4/Hector_BCS.jpg/revision/latest?cb=20170810091606",
     status: "Deceased",
-    nickname: "Don Hector",
+    nickname: "Tio Salamanca",
     appearance: [1, 2, 3, 4],
     portrayed: "Mark Margolis",
     category: "Breaking Bad, Better Call Saul",
